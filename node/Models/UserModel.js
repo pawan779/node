@@ -16,7 +16,13 @@ var users = dbConfig.sequelize.define( 'user',{
     password: {
         type:dbConfig.Sequelize.TEXT,
         allowNull: false
-    }},{
+    },
+    address:{
+        type:dbConfig.Sequelize.TEXT,
+        allowNull:false
+    }
+
+},{
     freezeTableName:true,
     tableName: 'user_table'});
     
