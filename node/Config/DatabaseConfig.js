@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('nove', 'root', '123', {
+const sequelize = new Sequelize('node1', 'root', '123', {
     host: 'localhost',
     dialect: 'mysql', /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
     logging: false
@@ -15,7 +15,7 @@ const sequelize = new Sequelize('nove', 'root', '123', {
 // console.log(PromiseVal)
 sequelize.authenticate()
 .then(function(result){
-    console.log("database connected successfully")
+    //console.log("database connected successfully")
 })
 .catch(function(err){
     console.log(err)

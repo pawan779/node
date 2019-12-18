@@ -1,9 +1,5 @@
 var bcrypt = require('bcryptjs');
-var dbConfig = require("../Config/DatabaseConfig.js");
-
-var usermodel=require("../Models/UserModel");
-
-
+var users = require('../Models/UserModel.js');
 function Validator (req,res,next){
     console.log(req.body);
     // res.send ('req recieved');
@@ -13,13 +9,9 @@ function Validator (req,res,next){
     else if (req.body.password === ''){
         res.json({status:404,message: 'password is required'})
     }
-    else if (req.body.address==='') {
-    res.jason({status:404,message:'address is required'})
-    }
     else{
-        res.json({status:200,message:'registered successfully'})
+        next();
     }
-    next();
 }
 
 function genHash(req,res,next){
@@ -27,62 +19,76 @@ function genHash(req,res,next){
     bcrypt.hash(req.body.password, saltRounds,function (err, hash)
     {
         if(hash){
-            console.log(hash);
-            req.hashkey= hash;
+            req.hashKey = hash;
+            next();
         }
-        next(); 
-
         if(err){
-            console.log(err);
+            res.json(err);
         }
-    }); 
-}
-function actualRegister(req,res,next){
-    usermodel.create(
-        {
-            username: req.body.username,
-            address: req.body.address,
-            password: req.hashkey
-        }
-       
-    )
-    .then(function(result)
-    {
-        console.log(result)
-        res.jason(result);
-    })
-    
-    .catch(function(err){
-console.log(err)
-res.jason(err);
-        })
-  
+    });  
 }
 
-function checkUserExists(req,res,next)
-{
-    usermodel.findOne({
-        where:{username: req.body.username}
+function UserExist(req,res,next){
+users.findOne({
+    where:{username:req.body.username}
+})
+.then(function(result){
+    if (result === null){
+        next();
+    }
+    else{
+    res.json ({status:409, message:'user already exist'})
+    }
+}).catch(function(err){
+    res.json(err);
+})
+}
+
+function Register(req,res,next){
+    users.create({
+        username:req.body.username,
+        password:req.hashKey
     })
     .then(function(result){
         console.log(result);
-        if(result===null)
-        {
-            next();
-        }
-        else
-        {
-            res.jason({  status:409,message:'username already exists'})
-        }
-                               
-    })
-    .catch(function(err)
-    {
-        console.log(err)
-        res.jason(err);
+        res.status(201);
+        res.json({status:200,message:'registered successfully'});
+        next();
+    }).catch(function(err){
+        res.json(err);
     })
 }
 
+function deleteuser(req,res,next){
+    if(req.params.id === null || req.params.id === undefined){
+        res.status(404);
+        res.json({status:404,message:"Id not provided"})
+    }
+    users.destroy({
+        where:{
+            id:req.params.id
+        }
+    })
+    .then(function(result){
+        if (result === 0){
+            res.status(500);
+            res.json({status:500,message:"User not found"});
+        }
+        else{
+            res.status(200);
+            res.json({status:200,message:"user deleted successful"});
+        }
+    })
+    .catch(function(err){
+            res.json(err);
+    })
+}
+
+function UploadImage(req, res, next) {
+        console.log(req.file);
+        console.log(req.body);
+}
+
 module.exports = {
-    Validator,genHash,actualRegister,checkUserExists
+    Validator,genHash,Register,UserExist,UploadImage,deleteuser
 }
