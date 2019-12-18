@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/Ajar-maharjan/Node-Practice.git"
+    "url": "git+ssh://git@github.com/pawan779/node.git"
   },
   "keywords": [
     "postmon"
@@ -16,9 +16,9 @@
   "author": "pleiades",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Ajar-maharjan/Node-Practice/issues"
+    "url": "https://github.com/pawan779/node/issues"
   },
-  "homepage": "https://github.com/Ajar-maharjan/Node-Practice#index.js",
+  "homepage": "https://github.com/pawan779/node#index.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
