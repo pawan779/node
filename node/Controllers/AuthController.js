@@ -36,8 +36,8 @@ bcrypt.compare(req.body.password,req.passwordfromdb)
     next();
     }
     else{
-        res.status(404);
-        res.json({status:404,message:"incorrect password"});
+        res.status(400);
+        res.json({status:400,message:"incorrect password"});
     }
 })
 .catch(function(err){
@@ -55,6 +55,7 @@ function jwtTokenGen(req,res,next){
         //console.log(err);
         console.log(resultToken);
         res.json({"userToken: ":resultToken})
+    
     })
 }
 

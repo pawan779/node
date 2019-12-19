@@ -16,6 +16,14 @@ var swaggerDefinition={
         description:"This is myapp documentation",
         version:"1.0.0"
     },
+securityDefinitions:{
+bearerAuth:{
+    type:'apiKey',
+    name:'authorizaton',
+    in:'header',
+    scheme:'bearer'
+}
+},
     host:"localhost:3002",
     basePath:"/"
 }
@@ -82,12 +90,49 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 
 
-
+/**
+ * @swagger
+ * /login:
+ *  post:
+ *   tags:
+ *    - Users
+ *   description: Users login testing
+ *   produces:
+ *    - application/json
+ *   comsumes:
+ *    - application/x-www-form-urlencoded
+ *   parameters:
+ *    - name: username
+ *      in: formData
+ *      type: string
+ *      required: true
+ *      description: Please provide unique username
+ *    - name: password
+ *      in: formData
+ *      type: string
+ *      required: true
+ *      description: Please provide password
+ *  
+ *   responses:
+ *    200:
+ *     description: login sucessfully
+ *    400:
+ *     description: incorrect password
+ *    500:
+ *     description: internal server error
+ * 
+ * 
+ * 
+ */
+app.post('/login',authController.validation,authController.passwordChecker,authController.jwtTokenGen);
 
 app.post('/registration',userController.Validator,userController.UserExist,
 userController.genHash,userController.Register);
 app.post('/profile', upload.single('image'),userController.UploadImage);
+
+
+
+
 app.delete('/users/:id',authController.verifyToken,userController.deleteuser);
-app.post('/login',authController.validation,authController.passwordChecker,
-authController.jwtTokenGen);
+
 app.listen(3002);
