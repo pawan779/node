@@ -48,6 +48,7 @@ app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swaggerSpecs));
 
 app.use(bodyParser.urlencoded({extended:true}));
 
+
 /**
  * @swagger
  * /registration:
@@ -87,6 +88,8 @@ app.use(bodyParser.urlencoded({extended:true}));
  * 
  */
 
+app.post('/registration',userController.Validator,userController.UserExist,
+userController.genHash,userController.Register);
 
 
 /**
@@ -126,8 +129,10 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 app.post('/login',authController.validation,authController.passwordChecker,authController.jwtTokenGen);
 
-app.post('/registration',userController.Validator,userController.UserExist,
-userController.genHash,userController.Register);
+
+
+
+
 app.post('/profile', upload.single('image'),userController.UploadImage);
 
 
@@ -150,6 +155,8 @@ app.post('/profile', upload.single('image'),userController.UploadImage);
 *      required: true
 *      description: please enter id
 *   responses:
+*    200:
+*     description: User Deleted sucessfully
 *    500:
 *     description: User not found
 */
