@@ -6,35 +6,34 @@ var upload = multer({ dest: 'uploads/' })
 var authController = require("./Controllers/AuthController.js")
 var userController = require("./Controllers/UserController.js")
 
-var swaggerJSDoc=require("swagger-jsdoc");
-var swaggerUI=require("swagger-ui-express");
+var swaggerJSDoc = require('swagger-jsdoc');
+var swaggerUI = require('swagger-ui-express');
 
 
-var swaggerDefinition={
+var swaggerDefinition = {
     info:{
-        title:'MyApplication',
-        description:"This is myapp documentation",
-        version:"1.0.0"
+        title:'myApplication',
+        description: 'This is my app documentation',
+        version: '1.0.0' //(New release,sometimes not backward compatible).(New feature, backward compatibility).(bug fix, backward compatibility)
     },
-securityDefinitions:{
-bearerAuth:{
-    type:'apiKey',
-    name:'authorizaton',
-    in:'header',
-    scheme:'bearer'
-}
-},
-    host:"localhost:3002",
-    basePath:"/"
-}
+    securityDefinitions: {
+        bearerAuth:{
+            type:'apiKey',
+            name:'authorization',
+            in:'header',
+            scheme:'bearer',
+        }
+    },
+    host:'localhost:3002',
+    basePath:'/'
+};
 
-var swaggerOptions={
+var swaggerOptions = {
     swaggerDefinition,
     apis:['./index.js']
-}
+};
 
-var swaggerSpecs= swaggerJSDoc(swaggerOptions);
-
+var swaggerSpecs = swaggerJSDoc(swaggerOptions);
 app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swaggerSpecs));
 
 
@@ -112,7 +111,6 @@ app.use(bodyParser.urlencoded({extended:true}));
  *      type: string
  *      required: true
  *      description: Please provide password
- *  
  *   responses:
  *    200:
  *     description: login sucessfully
@@ -124,6 +122,8 @@ app.use(bodyParser.urlencoded({extended:true}));
  * 
  * 
  */
+
+
 app.post('/login',authController.validation,authController.passwordChecker,authController.jwtTokenGen);
 
 app.post('/registration',userController.Validator,userController.UserExist,
@@ -131,7 +131,28 @@ userController.genHash,userController.Register);
 app.post('/profile', upload.single('image'),userController.UploadImage);
 
 
-
+/**
+* @swagger
+* /users/{id}:
+*  delete:
+*   tags:
+*    - Delete user
+*   description: Delete user from token testing
+*   produces:
+*    - application/json
+*   consumes:
+*    - application/x-www-form-urlencoded
+*   security:
+*    - bearerAuth: []
+*   parameters:
+*    - name: id
+*      in: path
+*      required: true
+*      description: please enter id
+*   responses:
+*    500:
+*     description: User not found
+*/
 
 app.delete('/users/:id',authController.verifyToken,userController.deleteuser);
 

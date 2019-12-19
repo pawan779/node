@@ -37,6 +37,7 @@ users.findOne({
         next();
     }
     else{
+        res.status(409);
     res.json ({status:409, message:'user already exist'})
     }
 }).catch(function(err){
